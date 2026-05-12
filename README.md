@@ -79,7 +79,7 @@ Response (ejemplo):
 ```bash
 cd backend
 poetry install
-export JWT_SECRET='cambia-este-secreto'
+export JWT_SECRET='12345678901234567890123456789012'
 export AUTH_USERNAME='admin'
 export AUTH_PASSWORD='admin123'
 poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
@@ -92,7 +92,7 @@ poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 Desde la raíz del proyecto:
 
 ```bash
-export JWT_SECRET='cambia-este-secreto'
+export JWT_SECRET='12345678901234567890123456789012'
 docker compose up --build
 ```
 

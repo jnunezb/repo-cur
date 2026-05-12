@@ -82,7 +82,7 @@ def get_token(payload: LoginRequest) -> dict[str, str | int]:
 
 
 @app.post("/auth/refresh")
-def refresh_token(payload: RefreshRequest) -> dict[str, str | int]:
+def refresh_access_token(payload: RefreshRequest) -> dict[str, str | int]:
     try:
         decoded = jwt.decode(
             payload.refresh_token,
