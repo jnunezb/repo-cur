@@ -1,0 +1,23 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: jwt-auth-service:latest
+    container_name: jwt-auth-service
+    ports:
+      - "8000:8000"
+    environment:
+      # Override any setting via environment variables
+      - SECRET_KEY=change-me-in-production-use-a-long-random-string
+      - ACCESS_TOKEN_EXPIRE_SECONDS=300
+      - REFRESH_TOKEN_EXPIRE_SECONDS=3600
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin123
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
