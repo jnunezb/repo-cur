@@ -112,6 +112,11 @@ def refresh_access_token(payload: RefreshRequest) -> dict[str, str | int]:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token payload",
         )
+    if not secrets.compare_digest(subject, VALID_USERNAME):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token subject",
+        )
 
     new_access_token = create_token(
         subject=subject,
