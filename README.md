@@ -85,6 +85,8 @@ export AUTH_PASSWORD='admin123'
 poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
+> Usa un `JWT_SECRET` fuerte (recomendado: al menos 32 caracteres/bytes).
+
 ## Uso con Docker
 
 Desde la raíz del proyecto:

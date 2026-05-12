@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import os
+import secrets
 
 import jwt
 from fastapi import FastAPI, HTTPException, status
@@ -52,7 +53,9 @@ def health() -> dict[str, str]:
 
 @app.post("/auth/token")
 def get_token(payload: LoginRequest) -> dict[str, str | int]:
-    if payload.username != VALID_USERNAME or payload.password != VALID_PASSWORD:
+    username_ok = secrets.compare_digest(payload.username, VALID_USERNAME)
+    password_ok = secrets.compare_digest(payload.password, VALID_PASSWORD)
+    if not (username_ok and password_ok):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid credentials",
@@ -92,7 +95,7 @@ def refresh_token(payload: RefreshRequest) -> dict[str, str | int]:
     except jwt.InvalidTokenError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired refresh token",
+            detail="Invalid refresh token",
         ) from exc
 
     if decoded.get("type") != "refresh":
