@@ -1,0 +1,10 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: repo-cur-backend
+    environment:
+      JWT_SECRET: super-secret-key-change-me
+    ports:
+      - "8000:8000"
