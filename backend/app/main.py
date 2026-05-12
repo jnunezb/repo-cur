@@ -7,8 +7,6 @@ from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 
 
-ACCESS_TOKEN_EXPIRE_SECONDS = 300
-REFRESH_TOKEN_EXPIRE_SECONDS = 3600
 JWT_ALGORITHM = "HS256"
 
 
@@ -21,6 +19,18 @@ def get_required_env(name: str, min_length: int = 1) -> str:
     return value
 
 
+def get_int_env(name: str, default: int) -> int:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    parsed = int(value)
+    if parsed <= 0:
+        raise RuntimeError(f"Invalid environment variable: {name} (must be > 0)")
+    return parsed
+
+
+ACCESS_TOKEN_EXPIRE_SECONDS = get_int_env("ACCESS_TOKEN_EXPIRE_SECONDS", 300)
+REFRESH_TOKEN_EXPIRE_SECONDS = get_int_env("REFRESH_TOKEN_EXPIRE_SECONDS", 3600)
 JWT_SECRET = get_required_env("JWT_SECRET", min_length=32)
 VALID_USERNAME = get_required_env("AUTH_USERNAME")
 VALID_PASSWORD = get_required_env("AUTH_PASSWORD")

@@ -82,6 +82,9 @@ poetry install
 export JWT_SECRET='12345678901234567890123456789012'
 export AUTH_USERNAME='admin'
 export AUTH_PASSWORD='admin123'
+# Opcionales:
+# export ACCESS_TOKEN_EXPIRE_SECONDS='300'
+# export REFRESH_TOKEN_EXPIRE_SECONDS='3600'
 poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
