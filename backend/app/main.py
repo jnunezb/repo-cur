@@ -8,10 +8,19 @@ from pydantic import BaseModel
 
 ACCESS_TOKEN_EXPIRE_SECONDS = 300
 REFRESH_TOKEN_EXPIRE_SECONDS = 600
-JWT_SECRET = os.getenv("JWT_SECRET", "change-me-in-production")
 JWT_ALGORITHM = "HS256"
-VALID_USERNAME = "admin"
-VALID_PASSWORD = "admin123"
+
+
+def get_required_env(name: str) -> str:
+    value = os.getenv(name)
+    if not value:
+        raise RuntimeError(f"Missing required environment variable: {name}")
+    return value
+
+
+JWT_SECRET = get_required_env("JWT_SECRET")
+VALID_USERNAME = get_required_env("AUTH_USERNAME")
+VALID_PASSWORD = get_required_env("AUTH_PASSWORD")
 
 app = FastAPI(title="JWT FastAPI Demo", version="1.0.0")
 
@@ -75,7 +84,12 @@ def refresh_token(payload: RefreshRequest) -> dict[str, str | int]:
             JWT_SECRET,
             algorithms=[JWT_ALGORITHM],
         )
-    except jwt.PyJWTError as exc:
+    except jwt.ExpiredSignatureError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Expired refresh token",
+        ) from exc
+    except jwt.InvalidTokenError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired refresh token",
